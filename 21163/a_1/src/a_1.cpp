@@ -21,11 +21,21 @@ public:
 };
 class Tree{
 	Node *q, *root;
-	friend class node;
 public:
+	friend class node;
 	Tree(){
 		q = NULL;
 		root = NULL;
+	}
+	void mirror(Node *root){
+		if(root){
+			mirror(root->left);
+			mirror(root->right);
+			swap(root->right, root->left);
+		}
+	}
+	void mirrorInitialize(){
+		mirror(root);
 	}
 	void traversal(int choice){
 		if(choice == 0)
@@ -43,7 +53,7 @@ public:
 		else{
 			q=root;
 			while(1){
-				cout<<"Goto left or right node?(1/0) : ";
+				cout<<"Goto left or right node?(0/1) : ";
 				cin>>side;
 				if(side == 1 ){
 					if(q->right != NULL)
@@ -153,17 +163,54 @@ public:
 			}
 		}
 	}
+	void eraseTree(Node *rt){
+		if(rt != NULL){
+			eraseTree(rt->left);
+			eraseTree(rt->right);
+			delete(root);
+		}
+	}
+	void initializeEraseTree(){
+		eraseTree(root);
+	}
+	void assignTreeInitialize(){
+		Tree obnew;
+		obnew.root->value = root->value;
+		treeInitialize(root, obnew.root);
+	}
+	void treeInitialize(Node *rt, Node *rt1){
+		if(rt != NULL){
+			rt1->left  = rt->left;
+			rt1->right = rt->right;
+			treeInitialize(rt->left, rt1->left);
+			treeInitialize(rt->right, rt1->right);
+		}
+		cout<<"\nCHECK : \n";
+		inorder_recursive(rt);
+		cout<<endl;
+		inorder_recursive(rt1);
+	}
+
+
+
+
 };
 int main() {
+	int flag = 0;
 	Tree obj;
 	int cont = 1;
 	int val;
 	int choice;
 	while(cont){
-		cout<<"\n1:ADD NODE ";
-		cout<<"\n2:IN-ORDER";
-		cout<<"\n3:PRE-ORDER";
-		cout<<"\n4:POST-ORDER";
+		cout<<"\n1:ADD NODE ";				//DONE
+		cout<<"\n2:IN-ORDER";				//DONE
+		cout<<"\n3:PRE-ORDER";				//DONE - no chk done
+		cout<<"\n4:POST-ORDER";				//DONE - no chk done
+		cout<<"\n5:MIRROR TREE";			//DONE - no chk done
+		cout<<"\n6:ERASE TREE";				//DONE - no chk done
+		cout<<"\n7:ASSIGN TO ANOTHER TREE";	//DONE - NOT BY OVERLOADING
+		cout<<"\n8:CHECK IF EQUAL";
+		cout<<"\n9:PRINT LEVEL WISE";
 		cout<<"\n99:END";
 		cout<<"\n--- enter choice :  ";
 		cin>>choice;
@@ -186,9 +233,21 @@ int main() {
 			case 4:
 				obj.traversal(2);
 				cout<<endl;
-
 				//obj.postorder();		//error
 				break;
+			case 5:
+				obj.mirrorInitialize();
+				break;
+			case 6:
+				obj.initializeEraseTree();
+				break;
+			case 7:
+				obj.assignTreeInitialize();
+				break;
+			case 8:						//remaining
+				flag = 1;
+				goto c;
+				obj.checkEqual()
 			case 99:
 				cont = 0;
 				break;
