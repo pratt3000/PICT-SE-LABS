@@ -1,0 +1,36 @@
+section .data
+global arr 
+arr db 23,-9,7,5,-4
+
+section .text
+global _start   ;must be declared for linker (ld)
+	
+_start:
+		mov eax, 5				;no of elements
+		mov ebx, 0				;negative number count
+		mov ecx, arr			;access elements
+loop:
+		rlc ecx				;rotate left through carry
+		jnc pos				;jump if positve
+		inc ebx				;neg count
+		
+pos:		dcr eax				;iteration
+		jnz loop				;on complete ignore
+	
+done: 
+
+		   add   ebx, '0'
+		   mov  [sum], ebx
+
+display:
+
+		   mov  edx,1    			;message length
+		   mov  ecx, sum   		;message to write
+		   mov  ebx, 1     			;file descriptor (stdout)
+		   mov  eax, 4     			;system call number (sys_write)
+		   int  0x80       			;call kernel
+	
+		   mov  eax, 1     			;system call number (sys_exit)
+		   int  0x80       			;call kernel	
+
+
