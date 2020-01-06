@@ -205,30 +205,28 @@ public:
 		}
 	}
 	void postorder(){
-		Stack1 <Node*> st;
-		q = root;
-		Node *s;
-		int flag = 0;
-		while(flag == 0){
-			if(q != NULL){
-				st.push(q);
-				q = q->left;
+		if(root==NULL){
+				cout<<"\nTree is Empty!";
+				return;
 			}
-			else if(!st.isEmpty()){
-				q = st.top();
-				st.pop();
-				if(q->right == NULL){
-					cout<<q->value<<" ";
-				}
-				else{
-					st.push(q);
-					q = q->right;
-				}
+			cout<<"\n";
+			Stack1 <Node*> stack1 ,stack2;
+			Node *p=root;
+			stack1.push(p);
+			while(!stack1.isEmpty()){
+				p=stack1.top();
+				stack1.pop();
+				stack2.push(p);
+				if(p->left!=NULL)
+					stack1.push(p->left);
+				if(p->right!=NULL)
+					stack1.push(p->right);
 			}
-			else{
-				flag = 1;
+			while(!stack2.isEmpty()){
+				p=stack2.top();
+				stack2.pop();
+				cout<<p->value<<" ";
 			}
-		}
 	}
 	void eraseTree(Node *rt){
 		if(rt != NULL){
@@ -260,26 +258,27 @@ public:
 		cout<<endl;
 		inorder_recursive(rt1);
 	}
-	bool checkEqual(Node *root1, Node *root){
-		int eq = 1;
-		if(root1 != root){
+	bool checkEqual(Node *root1, Node *root, int eq){
+		if(root1->value != root->value){
 			eq = 0;
+			return eq;
 		}
-		if(root != NULL){
-			if(root1 != root){
+		if(root->value != NULL){
+			if(root1->value != root->value){
 				eq = 0;
+				return eq;
 			}
-			checkEqual(root1->left, root->left);
-			checkEqual(root1->right, root->right);
+			eq = checkEqual(root1->left, root->left, eq);
+			eq = checkEqual(root1->right, root->right, eq);
 		}
 		return eq;
 	}
 	void checkEqualinitialize(Tree obj1){
-		if(checkEqual(obj1.root, root )){
+		if(checkEqual(obj1.root, root, 1 )){
 			cout<<"\nEQUAL TREES";
 		}
 		else{
-			cout<<"\nnot equal";
+			cout<<"\nNot equal";
 		}
 	}
 	void printNodesLevelWise_noRoot(){
@@ -296,9 +295,25 @@ public:
 			}while(!qu.isEmpty());
 		}
 	}
+	Node *copy2(Node *p){
+			if(p==NULL){
+				return NULL;
+			}
+			else{
+				Node *t = new Node(p->value);
+				p->value =  t->value;
+				t->left = copy2(p->left);
+				t->right = copy2(p->right);
+				cout<<"copied"<<endl;
+				return t;
+			}
+		}
+	void operator+ (Tree obj3){
+			root = copy2(obj3.root);
+		}
 };
 int main() {
-	Tree obj1,obj2;
+	Tree obj1,obj2, copy1;
 	Tree *obj = &obj1;
 	int cont = 1;
 	int val;
@@ -307,13 +322,13 @@ int main() {
 	cout<<"\n 1:ADD NODE ";				//DONE
 	cout<<"\n 2:IN-ORDER";				//DONE
 	cout<<"\n 3:PRE-ORDER";				//DONE
-	cout<<"\n 4:POST-ORDER";			//DONE - error
+	cout<<"\n 4:POST-ORDER";			//DONE
 	cout<<"\n 5:MIRROR TREE";			//DONE
 	cout<<"\n 6:ERASE TREE";			//DONE
-	cout<<"\n 7:ASSIGN TO ANOTHER TREE";//DONE - error
+	cout<<"\n 7:ASSIGN TO ANOTHER TREE";//DONE
 	cout<<"\n 8:CHECK IF EQUAL";		//DONE
 	cout<<"\n 9:PRINT LEVEL WISE";		//DONE - no chk done
-	cout<<"\n10: switch trees";
+	cout<<"\n10:SWITCH TREE";
 	cout<<"\n99:END";
 	while(cont){
 		cout<<"\n--- enter choice :  ";
@@ -335,7 +350,7 @@ int main() {
 			case 4:
 				obj->traversal(2);
 				cout<<endl;
-				//obj.postorder();		//error
+				obj->postorder();		//error
 				break;
 			case 5:
 				obj->mirrorInitialize();
@@ -344,7 +359,8 @@ int main() {
 				obj->initializeEraseTree();
 				break;
 			case 7:
-				obj->assignTreeInitialize();
+				copy1 = obj;
+				cout<<"\ndone copying";;
 				break;
 			case 8:
 				if(select)
@@ -372,3 +388,6 @@ int main() {
 	cout<<"\n~ TERMINATED";
 	return 0;
 }
+
+//revise : copying to another tree
+//revise : postorder non-recursive
