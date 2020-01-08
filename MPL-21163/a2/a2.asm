@@ -14,42 +14,127 @@
 		syscall	
 %endmacro
 	
-%macro copyAhead 2
+copyAhead:
 		mov rbx, [rax]
 		add rax, 8
 		add rbx, 8
-%endmacro
+		ret
+
+arrdisplaysrc:
+	mov rsi, srcblk
+	mov rbx, 05
+lp1:	mov rax, [rsi]
+	push rsi
+	push rbx
+	call _printRAX
+	pop rbx
+	pop rsi
+	add rsi, 8
+	dec rbx
+	jnz lp1
+	ret
+	
+	
+arrdisplaydst:
+mov rsi, dstblk
+	mov rbx, 05
+lp2:	mov rax, [rsi]
+	push rsi
+	push rbx
+	call _printRAX
+	pop rbx
+	pop rsi
+	add rsi, 8
+	dec rbx
+	jnz lp2
+	ret	
+
+
 
 section .data
-	srcblk dq 10h,20h, 30h, 40h, 50h
-	dstblk dq 00h, 00h, 00h, 00h, 00h
+	srcblk dq 10,20, 30, 40, 50
+	dstblk dq 00, 00, 00, 00, 00
 	arraylen equ $ - srcblk		
 	srcblkmsg: db "SRC block : "
-	dstblkmsg: db "DST block : "
 	srcblkmsglen: equ $ -srcblkmsg
+	dstblkmsg: db "DST block : "	
 	dstblkmsglen: equ $ -dstblkmsg
+	newline: db 10
 
 section .text
 global _start 
 _start:
-		mov rsi,05h
+		mov rsi, arraylen
 		message srcblkmsg, srcblkmsglen
-		display srcblk, 05
-		newline: db 10
+		call arrdisplaysrc
+		display newline, 1
 		message dstblkmsg, dstblkmsglen
-		display dstblk, 05
-		newline: db 10
-		mov rax, srcblk
-		mov rbx, dstblk
-nextE:	copyAhead rax, rbx
-		dec rsi
-		jz nextE
+		call arrdisplaydst
+		display newline, 1
+		
+		mov rsi, srcblk
+		mov rdi, dstblk
+		mov rcx, 05
+nextE:	mov rax, [rsi]
+		mov [rdi], rax
+		add rsi, 8
+		add rdi, 8  
+		dec rcx
+		jnz nextE
+
 		message srcblkmsg, srcblkmsglen
-		display srcblk, 05
+		call arrdisplaysrc
+		display newline, 1
 		message dstblkmsg, dstblkmsglen
-		display dstblk, 05
-
-
+		call arrdisplaydst
+		display newline, 1
+		mov rax, 60
+		mov rdi, 0
+		syscall
+; hex to ascii
+_printRAX:
+    mov rcx, digitSpace
+    mov rbx, 0
+    mov [rcx], rbx
+    inc rcx
+    mov [digitSpacePos], rcx
+ 
+_printRAXLoop:
+    mov rdx, 0
+    mov rbx, 10
+    div rbx
+    push rax
+    add rdx, 48
+ 
+    mov rcx, [digitSpacePos]
+    mov [rcx], dl
+    inc rcx
+    mov [digitSpacePos], rcx
+   
+    pop rax
+    cmp rax, 0
+    jne _printRAXLoop
+ 
+_printRAXLoop2:
+    mov rcx, [digitSpacePos]
+ 
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, rcx
+    mov rdx, 1
+    syscall
+ 
+    mov rcx, [digitSpacePos]
+    dec rcx
+    mov [digitSpacePos], rcx
+ 
+    cmp rcx, digitSpace
+    jge _printRAXLoop2
+ 
+    ret
+section .bss
+    digitSpace resb 100
+    digitSpacePos resb 8	
 
 
 
