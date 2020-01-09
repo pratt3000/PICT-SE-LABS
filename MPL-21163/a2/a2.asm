@@ -21,6 +21,7 @@ copyAhead:
 		ret
 
 arrdisplaysrc:
+	display newline, 1
 	mov rsi, srcblk
 	mov rbx, 05
 lp1:	mov rax, [rsi]
@@ -35,16 +36,41 @@ lp1:	mov rax, [rsi]
 	push rbx
 	;display space, 1
 	call _printRAX
-	display space, 1
+	display newline, 1
 	pop rbx
 	pop rsi
 	add rsi, 8
 	dec rbx
 	jnz lp1
 	ret
-	
+
+
+arrdisplaysrc1:
+	display newline, 1
+	mov rsi, srcblk1
+	mov rbx, 05
+lp5:	mov rax, [rsi]
+	push rsi
+	push rbx
+	call _printRAX
+	display space, 1
+	pop rbx
+	pop rsi
+	mov rax, rsi
+	push rsi
+	push rbx
+	;display space, 1
+	call _printRAX
+	display newline, 1
+	pop rbx
+	pop rsi
+	add rsi, 8
+	dec rbx
+	jnz lp5
+	ret	
 	
 arrdisplaydst:
+	display newline, 1
 	mov rsi, dstblk
 	mov rbx, 05
 lp2:	mov rax, [rsi]
@@ -60,15 +86,42 @@ lp2:	mov rax, [rsi]
 	push rbx
 	;display space, 1
 	call _printRAX
-	display space, 1
+	display newline, 1
 	pop rbx
 	pop rsi
 	add rsi, 8
 	dec rbx
 	jnz lp2
+	ret
+
+
+arrdisplaydst1:
+	display newline, 1
+	mov rsi, dstblk1
+	mov rbx, 05
+lp6:	mov rax, [rsi]
+	push rsi
+	push rbx
+	call _printRAX
+	display space, 1
+	pop rbx
+	pop rsi
+	
+	mov rax, rsi
+	push rsi
+	push rbx
+	;display space, 1
+	call _printRAX
+	display newline, 1
+	pop rbx
+	pop rsi
+	add rsi, 8
+	dec rbx
+	jnz lp6
 	ret	
 
 arrdispovrlp:
+	display newline, 1
 	mov rsi, arrovrlp
 	mov rbx, 10
 lp3:	mov rax, [rsi]
@@ -84,7 +137,7 @@ lp3:	mov rax, [rsi]
 	push rbx
 	;display space, 1
 	call _printRAX
-	display space, 1
+	display newline, 1
 	pop rbx
 	pop rsi
 	add rsi, 8
@@ -92,31 +145,77 @@ lp3:	mov rax, [rsi]
 	jnz lp3
 	ret
 
+arrdispovrlp1:
+	display newline, 1
+	mov rsi, arrovrlp1
+	mov rbx, 10
+lp4:	mov rax, [rsi]
+	push rsi
+	push rbx
+	call _printRAX
+	display space, 1
+	pop rbx
+	pop rsi
+	
+	mov rax, rsi
+	push rsi
+	push rbx
+	;display space, 1
+	call _printRAX
+	display newline, 1
+	pop rbx
+	pop rsi
+	add rsi, 8
+	dec rbx
+	jnz lp4
+	ret
 
 section .data
 	arrovrlp dq 10, 20, 30, 40, 50, 00, 00, 00, 00, 00
 	arrovrlplen equ $ - arrovrlp
+	arrovrlp1 dq 10, 20, 30, 40, 50, 00, 00, 00, 00, 00
+	arrovrlplen1 equ $ - arrovrlp1
 	srcblk dq 10,20, 30, 40, 50
 	arraylen equ $ - srcblk	
-	dstblk dq 00, 00, 00, 00, 00	
-	srcblkmsg: db "SRC block : "
+	dstblk dq 00, 00, 00, 00, 00
+	
+	srcblk1 dq 10,20, 30, 40, 50
+	;arraylen equ $ - srcblk1
+	dstblk1 dq 00, 00, 00, 00, 00	
+	
+	srcblkmsg: db "SRC block (before) [non - string]: "
 	srcblkmsglen: equ $ -srcblkmsg
-	dstblkmsg: db "DST block : "	
+	dstblkmsg: db "DST block (before) [non- string]: "	
 	dstblkmsglen: equ $ -dstblkmsg
-	srcadd: db "SRC block base address : "	
+	srcadd: db "SRC block (after) [non - string]: "	
 	srcaddmsglen: equ $ -srcadd
-	dstadd: db "DST block base address: "	
+	dstadd: db "DST block (after) [non- string]:"	
 	dstaddmsglen: equ $ -dstadd
-	ovrlapmsgbf: db "Before Over lapping :"	
+	ovrlapmsgbf: db "Before Over lapping [non- string]:"	
 	ovrlapmsgbflen: equ $ -ovrlapmsgbf
-	ovrlapmsgaf: db "After Over lapping :"	
+	ovrlapmsgaf: db "After Over lapping [non - string] :"	
 	ovrlapmsgaflen: equ $ -ovrlapmsgaf
+	ovrlapmsgbf1: db "Before Over lapping [string] :"	
+	ovrlapmsgbflen1: equ $ -ovrlapmsgbf1
+	ovrlapmsgaf1: db "After Over lapping [string] :"	
+	ovrlapmsgaflen1: equ $ -ovrlapmsgaf1
+	srcblkmsg1: db "SRC block (before) [string]: "
+	srcblkmsglen1: equ $ -srcblkmsg1
+	dstblkmsg1: db "DST block (before) [ string]: "	
+	dstblkmsglen1: equ $ -dstblkmsg1
+	srcadd1: db "SRC block (after) [string]: "	
+	srcaddmsglen1: equ $ -srcadd1
+	dstadd1: db "DST block (after) [string]:"	
+	dstaddmsglen1: equ $ -dstadd1
 	newline: db 10
 	space: db " "
 
 section .text
 global _start 
 _start:
+		;-----------------------------------------------------------------
+		;with string - non - overlapping
+		;----------------------------------------------------------------
 		mov rsi, arraylen
 		message srcblkmsg, srcblkmsglen
 		call arrdisplaysrc
@@ -135,24 +234,16 @@ nextE:	mov rax, [rsi]
 		dec rcx
 		jnz nextE
 
-		message srcblkmsg, srcblkmsglen
+		message srcadd, srcaddmsglen
 		call arrdisplaysrc
 		display newline, 1
-		message dstblkmsg, dstblkmsglen
+		message dstadd, dstaddmsglen
 		call arrdisplaydst
 		display newline, 1
 
-		message srcadd, srcaddmsglen
-		mov rax, srcblk		
-		call _printRAX
-		display newline, 1
-		message dstadd, dstaddmsglen
-		mov rax, dstblk
-		call _printRAX
-		display newline, 1
-		;-------------------------------------------------
-		;overlapping
-		;-------------------------------------------------
+		;-----------------------------------------------------------------
+		;without string - non - overlapping
+		;----------------------------------------------------------------
 		message ovrlapmsgbf, ovrlapmsgbflen
 		call arrdispovrlp
 		display newline, 1
@@ -170,7 +261,51 @@ nextE1:	mov rax, [rsi]
 		message ovrlapmsgaf, ovrlapmsgaflen
 		call arrdispovrlp
 		display newline, 1
+		
+		;-----------------------------------------------------------------
+		;with string - overlapping
+		;----------------------------------------------------------------
+		;over lapping 
+		message ovrlapmsgbf1, ovrlapmsgbflen1
+		call arrdispovrlp1
+		display newline, 1
+		mov rsi, arrovrlp1
+		mov rdi, arrovrlp1
+		add rdi, 40
+		mov rcx,5
+		
+		cld
+		rep movsq
+		
+		message ovrlapmsgaf1, ovrlapmsgaflen1
+		call arrdispovrlp1
+		display newline, 1
+		
+		;-----------------------------------------------------------------
+		;with string - non - overlapping
+		;-----------------------------------------------------------------
+		message srcblkmsg1, srcblkmsglen1
+		call arrdisplaysrc1
+		display newline, 1
+		message dstblkmsg1, dstblkmsglen1
+		call arrdisplaydst1
+		display newline, 1
 
+		mov rsi, srcblk1
+		mov rdi, dstblk1
+		mov rcx,5	
+			
+		cld
+		rep movsq
+		
+		message srcadd1, srcaddmsglen1
+		call arrdisplaysrc1
+		display newline, 1
+		message dstadd1, dstaddmsglen1
+		call arrdisplaydst1
+		display newline, 1
+		
+		;---------------------------------------------------------------
 		mov rax, 60
 		mov rdi, 0
 		syscall
