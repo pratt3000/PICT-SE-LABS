@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 using namespace std;
 class Node{
@@ -118,6 +117,33 @@ public:
 			cout<<rt->value<<" ";
 		}
 	}
+	void test(){
+	    //tree tested 
+	    /*
+	                  2 
+	           3            1 
+	       7      6             5
+	       
+	    */
+	    cout<<root->value<<endl;//2
+	    cout<<root->left->value<<endl;//3
+	    cout<<root->left->left->value<<endl;//7
+	    cout<<root->left->right->value<<endl<<endl;//6
+	    
+	    cout<<root->right->value<<endl;//1
+	    cout<<root->right->right->value<<endl<<endl;//5
+	    
+	    cout<<root->right->right->left->value<<endl;//1
+	    cout<<root->right->right->left->left->value<<endl;//2
+	    cout<<root->left->left->right->value<<endl;//3
+	    cout<<root->left->right->left->value<<endl;//3
+	    cout<<root->left->right->right->value<<endl<<endl;//2
+	    
+	    cout<<root->right->right->right<<endl;//1
+	    cout<<root->left->left->left<<endl;//7
+
+	    
+	}
 };
 int main() {
 	Tree obj1,obj2, copy1;
@@ -148,6 +174,9 @@ int main() {
 					obj->traversal(2);
 					cout<<endl;
 					break;
+				case 5:
+				    obj->test();
+				    break;
 				case 99:
 					cont = 0;
 					break;
