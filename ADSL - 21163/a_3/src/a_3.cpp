@@ -83,43 +83,74 @@ public:
                 }
             }
         }
-    // add works - inorder traversal has some error
     void traversal(int choice){
             if(root == NULL){
                 cout<<"empty tree";
                 return;
             }
-        Node *rt1 = root;
-        while(rt1->left ){
-            rt1 = rt1->left;
-        }
             if(choice == 0)
-                inorder_recursive(rt1);
+                inorder(root);
             if(choice == 1)
-                preorder_recursive(root);
-            if(choice == 2)
-                postorder_recursive(root);
+                preorder(root);
         }
-    void inorder_recursive(Node *rt){
-        while(rt->value != 0){
-            cout<<rt->value<<" ";
-            inorder_recursive(rt -> right);
-        }
+    void inorder(Node *rt){
+    	q = rt;
+    	while(q->left != NULL){
+    		q = q->left;
+    	}
+    	while(q != NULL){
+    		cout<<q->value<<" ";
+    		if(q->rflag == 1){
+    			q = q->right;
+    		}
+    		else{
+    			q = q->right;
+    			if(q!= NULL){
+					while(q->lflag == 0)
+						q = q->left;
+    			}
+    		}
+    	}
     }
-    void preorder_recursive(Node *rt){
-        if(rt != NULL){
-            cout<<rt->value<< " ";
-            preorder_recursive(rt->left);
-            preorder_recursive(rt->right);
-        }
+    void preorder(Node *rt){
+    	q = rt;
+		cout<<root->value<<" ";
+		while(q->left != NULL){
+			q = q->left;
+			cout<<q->value<<" ";
+		}
+		while(q != NULL){
+			if(q->rflag == 1){
+				q = q->right;
+			}
+			else{
+				q = q->right;
+				if(q!= NULL){
+					cout<<q->value<<" ";
+					while(q->lflag == 0){
+						q = q->left;
+						cout<<q->value<<" ";
+					}
+				}
+			}
+		}
     }
-    void postorder_recursive(Node *rt){
-        if(rt != NULL){
-            postorder_recursive(rt->left);
-            postorder_recursive(rt->right);
-            cout<<rt->value<<" ";
-        }
-    }
+    /*void newpreorder(){
+    	q = root;
+		//cout<<root->value<<" ";
+		while(q != NULL){
+			if(q->rflag == 1){
+				q = q->right;
+			}
+			else{
+					cout<<q->value<<" ";
+					while(q->lflag == 0){
+						q = q->left;
+						cout<<q->value<<" ";
+					}
+			}
+		}
+    }*/
     void test(){
         //tree tested
         /*
@@ -141,45 +172,42 @@ public:
         cout<<root->left->left->right->value<<endl;//3
         cout<<root->left->right->left->value<<endl;//3
         cout<<root->left->right->right->value<<endl<<endl;//2
-        
-        cout<<root->right->right->right<<endl;//1
-        cout<<root->left->left->left<<endl;//7
+        cout<<&root->right->right->right<<endl;//NULL
+        cout<<&root->left->left->left<<endl;//NULL
 
         
     }
 };
 int main() {
-    Tree obj1,obj2, copy1;
-        Tree *obj = &obj1;
+    Tree obj;
         int cont = 1;
         int choice;
-        cout<<"\n 1:ADD NODE ";                //DONE
-        cout<<"\n 2:IN-ORDER";                //DONE
-        cout<<"\n 3:PRE-ORDER";                //DONE
-        cout<<"\n 4:POST-ORDER";            //DONE
+        cout<<"\n01:ADD NODE ";               	//DONE
+        cout<<"\n02:IN-ORDER";            	    //
+        cout<<"\n03:PRE-ORDER";                	//
+        cout<<"\n04:TEST"; 						//
         cout<<"\n99:END";
         while(cont){
             cout<<"\n--- enter choice :  ";
             cin>>choice;
             switch(choice){
                 case 1:
-                    obj->add();
+                    obj.add();
                     break;
                 case 2:
-                    obj->traversal(0);
+                    obj.traversal(0);
                     cout<<endl;
                     break;
                 case 3:
-                    obj->traversal(1);
+                    obj.traversal(1);
                     cout<<endl;
                     break;
                 case 4:
-                    obj->traversal(2);
-                    cout<<endl;
+                    obj.test();
                     break;
                 case 5:
-                    obj->test();
-                    break;
+                	obj.newpreorder();
+                	break;
                 case 99:
                     cont = 0;
                     break;
