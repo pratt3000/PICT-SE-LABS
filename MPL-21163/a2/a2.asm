@@ -1,12 +1,11 @@
-%macro message 2
+%macro display 2		
 		mov rax, 01
 		mov rdi, 01
 		mov rsi, %1
 		mov rdx, %2
-		syscall
+		syscall	
 %endmacro
-
-%macro display 2		
+%macro message 2		
 		mov rax, 01
 		mov rdi, 01
 		mov rsi, %1
@@ -178,11 +177,11 @@ section .data
 	srcblk dq 10,20, 30, 40, 50
 	arraylen equ $ - srcblk	
 	dstblk dq 00, 00, 00, 00, 00
-	
 	srcblk1 dq 10,20, 30, 40, 50
 	;arraylen equ $ - srcblk1
 	dstblk1 dq 00, 00, 00, 00, 00	
-	
+	dash: db "---------------------------------------------------------------------"
+	dashlen: equ $ -dash
 	srcblkmsg: db "SRC block (before) [non - string]: "
 	srcblkmsglen: equ $ -srcblkmsg
 	dstblkmsg: db "DST block (before) [non- string]: "	
@@ -217,6 +216,8 @@ _start:
 		;with string - non - overlapping
 		;----------------------------------------------------------------
 		mov rsi, arraylen
+		message dash, dashlen
+		display newline, 1
 		message srcblkmsg, srcblkmsglen
 		call arrdisplaysrc
 		display newline, 1
@@ -244,6 +245,8 @@ nextE:	mov rax, [rsi]
 		;-----------------------------------------------------------------
 		;without string - non - overlapping
 		;----------------------------------------------------------------
+		message dash, dashlen
+		display newline, 1
 		message ovrlapmsgbf, ovrlapmsgbflen
 		call arrdispovrlp
 		display newline, 1
@@ -265,7 +268,8 @@ nextE1:	mov rax, [rsi]
 		;-----------------------------------------------------------------
 		;with string - overlapping
 		;----------------------------------------------------------------
-		;over lapping 
+		message dash, dashlen
+		display newline, 1
 		message ovrlapmsgbf1, ovrlapmsgbflen1
 		call arrdispovrlp1
 		display newline, 1
@@ -284,6 +288,8 @@ nextE1:	mov rax, [rsi]
 		;-----------------------------------------------------------------
 		;with string - non - overlapping
 		;-----------------------------------------------------------------
+		message dash, dashlen
+		display newline, 1
 		message srcblkmsg1, srcblkmsglen1
 		call arrdisplaysrc1
 		display newline, 1
