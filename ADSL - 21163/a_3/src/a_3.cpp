@@ -17,7 +17,6 @@ public:
 class Tree{
     Node *q, *root;
 public:
-    friend class node;
     Tree(){
         q = NULL;
         root = NULL;
