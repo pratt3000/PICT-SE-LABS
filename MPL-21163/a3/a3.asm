@@ -75,6 +75,10 @@ HEXtoBCD:
 	read ascii, 2
 	print newLine, 1
 	mov rax, ascii
+		
+	call asciiToHex			;ascii to hex			
+	; hex converted and stored in rax
+
 	xor rcx, rcx
 loop:	xor dx, dx
 	mov dx, 10
@@ -89,6 +93,22 @@ loop2:	pop rdx
 	jnz loop2		
 ret
 
+asciiToHex:
+	mov rsi, rax
+	xor rax, rax
+loopATH0:	cmp byte[rsi], 10d
+	je loopATH1
+	rol rax, 04d
+	mov b1, byte[rsi]
+	cmp b1, 39h
+	jbe loopATH2
+	sub b1, 07h
+loopATH2:	sub b1, 30h
+	add a1, b1
+	inc rsi	
+	jmp loopATH0
+loopATH1:	
+ret
 
 Menu:
 	print dash, dash_len
@@ -103,4 +123,3 @@ Menu:
 	print newLine, 1
 	print choice1, choice1_len	
 ret
-
