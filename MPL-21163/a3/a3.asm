@@ -37,6 +37,7 @@ BCD   : resb 100
 hex   : resb 100
 choice: resb 2
 ascii : resb 100
+digit :resb 1
 	
 section .text
 global _start
@@ -49,7 +50,7 @@ _start :
 	jne Opt2_chk
 	;code for hex to bcd
 	call HEXtoBCD
-
+	
 	
 	;-------------------------------------------------
 Opt2_chk:	cmp byte[choice], 32H
@@ -69,46 +70,51 @@ EXIT:	;exit call
 ;-----------------------------------------------------------
 ;FUNCTIONS
 ;-----------------------------------------------------------
-HEXtoBCD:
+
+
+HEXtoBCD:;--------------------------------------------------
 	print newLine, 1
 	print readHex, readHex_len
-	read ascii, 2
+	read ascii, 4
 	print newLine, 1
-	mov rax, ascii
+	mov rsi, ascii
 		
-	call asciiToHex			;ascii to hex			
-	; hex converted and stored in rax
+	call asciiToHex	; hex converted and stored in rax
+			
+	mov rbx, 10d
+	push rbx
+loopHTB0:	xor rdx, rdx	
+	div rbx
+	push rdx
+	add rax, 0
+	jnz loopHTB0
 
-	xor rcx, rcx
-loop:	xor dx, dx
-	mov dx, 10
-	div dx
-	push dx
-	inc rcx
-	cmp rax, 0
-	jne loop
-loop2:	pop rdx
-	print rdx, 2
-	dec rcx
-	jnz loop2		
-ret
+loopHTB1:	pop rdx
+	cmp rdx, 10d
+	je skip0
+	add rdx, 30h
+	mov [digit],rdx
+	print digit, 1
+	jmp loopHTB1
 
-asciiToHex:
-	mov rsi, rax
+skip0:	print newLine, 1
+	print newLine, 1	
+ret;--------------------------------------------------------
+
+asciiToHex:;------------------------------------------------
 	xor rax, rax
-loopATH0:	cmp byte[rsi], 10d
-	je loopATH1
-	rol rax, 04d
-	mov b1, byte[rsi]
-	cmp b1, 39h
-	jbe loopATH2
-	sub b1, 07h
-loopATH2:	sub b1, 30h
-	add a1, b1
+	mov rcx, 04
+loopATH0: rol rax, 4
+	mov bl, byte[rsi]
+	cmp bl, 39h
+	jbe loopATH1
+	sub bl, 07h
+loopATH1:	sub bl, 30h
+	add al, bl
 	inc rsi	
-	jmp loopATH0
-loopATH1:	
-ret
+	dec rcx
+	jnz loopATH0
+ret;--------------------------------------------------------
 
 Menu:
 	print dash, dash_len
@@ -123,3 +129,8 @@ Menu:
 	print newLine, 1
 	print choice1, choice1_len	
 ret
+
+
+
+
+
