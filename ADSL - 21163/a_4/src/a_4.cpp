@@ -12,14 +12,52 @@ class Node{
     Node *down, *right;
     string name;
     int fuel;
+    int id, od;
+    bool visited;
 public:
     Node(string name, int fuel){
         down = NULL;
         right = NULL;
         this->name = name;
         this->fuel = fuel;
+        id  = 0;
+        od = 0;
+        visited = 0;
     }
     friend class AdjacencyList;
+};
+template <typename T>
+class Queue1{
+	T data[100];
+	int front, back;
+public:
+	Queue1(){
+		front = 50;
+		back = 50;
+		for(int i=0;i<100;i++)
+			data[i] = 0;
+	}
+	void enqueue(T val){
+		data[back] = val;
+		back--;
+	}
+	T dequeue(){
+		front--;
+		return data[front+1];
+	}
+	bool isEmpty(){
+		if(data[back] == 0 && front == back)
+			return 1;
+		return 0;
+	}
+	bool isPresent(T search){
+		int present = 0;
+		for(int i = front; i<=back; i++){
+			if(data[i] == search)
+				present = 1;
+		}
+		return present;
+	}
 };
 class AdjacencyList{
 	Node *start;
@@ -113,7 +151,7 @@ public:
 	void addEdge(){
 		string from, to;
 		int fuel1;
-		cout<<"\nAdding and edge";
+		cout<<"\nAdding an edge";
 		cout<<"\nFROM : ";
 		cin>>from;
 		cout<<"\nTO : ";
@@ -144,8 +182,7 @@ public:
 	}
 	void deleteEdge(){
 		string from, to;
-		int fuel1;
-		cout<<"\nAdding and edge";
+		cout<<"\nDeleting an edge";
 		cout<<"\nFROM : ";
 		cin>>from;
 		cout<<"\nTO : ";
@@ -169,12 +206,142 @@ public:
 				delete temprt;
 			}
 			else
-				cout<<"\n******Edge not present******";
+				cout<<"\n******Edge not present******"<<endl;
 		}
 		else
-			cout<<"\n******Edge not present******";
+			cout<<"\n******Edge not present******"<<endl;
+	}
+	void addVertice(){
+		Node* temp = start;
+		string tname;
+		cout<<"enter new vertice name : ";
+		cin>>tname;
+		while(temp->down != NULL)
+			temp = temp->down;
+		Node *temp2 = new Node(tname, 0);
+		temp->down = temp2;
+	}
+	void deleteVertice(){
+		cout<<"\nEnter vertice to delete : ";
+		string tname;
+		cin>>tname;
+		int flg = 0;
+		if(amongVertices(tname) == 1){
+			cout<<"vertice FOUND and deleted"<<endl;
+			Node *temp2,*temp = start;
+			while(temp->name.compare(tname) != 0){
+				temp2 = temp;
+				temp = temp->down;
+				flg = 1;
+			}
+			temp2->down = temp->down;
+			if(flg == 0){
+				start = temp->down;
+			}
+			temp= start;
+			Node *temp3;
+			while(temp->down != NULL){
+				temp3 = temp;
+				temp2 = temp->right;
+				while(temp2->right != NULL){
+					if(temp2->name.compare(tname) == 0){
+						temp3->right = temp2->right;
+						break;
+					}
+					temp3 = temp2;
+					temp2 = temp2->right;
+				}
+				temp = temp->down;
+			}
+		}
+		else{
+			cout<<"\nvertice NOT FOUND";
+		}
+	}
+	void calcIODegree(){
+		//calculate out degree;
+		int tempod = 0;
+		Node *temp = start;
+		while(temp != NULL){
+			Node *temp2 = temp->right;
+			while(temp2 != NULL){
+				tempod++;
+				temp2 = temp2->right;
+			}
+			temp->od = tempod;
+			tempod = 0;
+			temp = temp->down;
+		}
+		//calculate indegree now
+		temp = start;
+		string find;
+		int tempid = 0;
+		while(temp != NULL){
+			find = temp->name;
+			Node* temp2 = start;
+			while(temp2!= NULL){
+				Node* temp3 = temp2->right;
+				while(temp3 != NULL){
+					if(temp3->name.compare(find) == 0){
+						tempid++;
+					}
+					temp3 = temp3->right;
+				}
+				temp2 = temp2->down;
+			}
+			temp->id = tempid;
+			tempid = 0;
+			temp = temp->down;
+		}
+		displayIODegree();
+	}
+	void displayIODegree(){
+		Node *temp =start;
+		cout<<"name"<<"\t";
+		cout<<"outdegree"<<"\t";
+		cout<<"indegree"<<endl;
+		while(temp != NULL){
+			cout<<temp->name<<"\t\t";
+			cout<<temp->od<<"\t\t";
+			cout<<temp->id<<endl;
+			temp = temp->down;
+		}
 	}
 
+	bool BFSVisitedCheck(Node *find){
+		Node *temp = start;
+		while(find->name.compare(temp->name) != 0)
+			temp = temp->down;
+		if(temp->visited == 1)
+			return 1;
+		return 0;
+	}
+	void BFSSetVisited(Node* set){
+		Node *temp = start;
+		while(set->name.compare(temp->name) != 0 )
+			temp = temp->down;
+		if(temp != NULL)
+			temp->visited = 1;
+	}
+	void BFSTraversal(){
+		Queue1 <Node*> qu;
+		qu.enqueue(start);
+		start->visited = 1;
+		cout<<"----------------BFS------------------- "<<endl;
+		while(!qu.isEmpty()){
+			Node *temp2 = qu.dequeue();
+			temp2->visited = 1;
+			cout<<", "<<temp2->name;
+			temp2 = temp2->right;
+			while(temp2 != NULL){
+				if(BFSVisitedCheck(temp2) == 0){
+					qu.enqueue(temp2);
+					BFSSetVisited(temp2);
+				}
+				temp2 = temp2->right;
+			}
+		}
+	}
 };
 
 
@@ -182,13 +349,13 @@ int main() {
 	AdjacencyList ob;
 	int cont = 1;
 	int choice;
-	cout<<"\n1 : Initialise directed Graph";
-	cout<<"\n2 : Add Edge";
-	cout<<"\n3 : Delete Edge";
-	cout<<"\n4 : Add Vertice";
-	cout<<"\n5 : Delete Vertice";
-	cout<<"\n6 : In-degree & Out-degree";
-	cout<<"\n7 : Traversal";
+	cout<<"\n1 : Initialise directed Graph";	//done
+	cout<<"\n2 : Add Edge";						//done
+	cout<<"\n3 : Delete Edge";					//done
+	cout<<"\n4 : Add Vertice";					//done
+	cout<<"\n5 : Delete Vertice";				//done
+	cout<<"\n6 : In-degree & Out-degree";		//done
+	cout<<"\n7 : BFS Traversal";				//a bit remaining
 	cout<<"\n99 : END"<<endl;
 	while(cont){
 		cout<<"--- Enter choice :  ";
@@ -206,16 +373,16 @@ int main() {
 				ob.deleteEdge();
 				break;
 			case 4:
-
+				ob.addVertice();
 				break;
 			case 5:
-
+				ob.deleteVertice();
 				break;
 			case 6:
-
+				ob.calcIODegree();
 				break;
 			case 7:
-
+				ob.BFSTraversal();
 				break;
 			case 99:
 				cont = 0;
