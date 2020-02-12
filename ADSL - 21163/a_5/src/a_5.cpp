@@ -13,17 +13,17 @@ class AdjacencyMatrix{
 	int ofs;
 	int of1, of2;
 	int cost;
-	int *used;
+	int used[100][2];
 public:
 	void initialize(){
 		cout<<"number of offices : ";
 		cin>>ofs;
 		office = new int *[ofs];
-		used = new int [ofs];
 		for(int i=0; i<ofs; i++)
 			office[i] = new int [ofs];
 		for(int i=0; i<ofs; i++){
-			used[i] = 0;
+			used[i][1] = 0;
+			used[i][0] = INT_MAX;
 			for(int j=0; j<ofs; j++){
 				office[i][j] = 0;
 			}
@@ -43,14 +43,46 @@ public:
 		}
 	}
 	void krushkals(){
+		int current = 0;
 		int min = INT_MAX;
+		cout << "\nstart from 0";
+		cout << "link1" << "  " << cost << "  " << "link2";
 		for(int i=0; i<ofs; i++){
-			for(int j=i; j<ofs; j++){
-
+			if (used[current][0] > 0) {
+				used[current][0] = -1;
+				for(int j=0; j<ofs; j++){	
+					if (office[current][j] > 0) {
+						if (office[current][j] < used[j][0]) {
+							used[j][0] = office[current][j];
+							used[j][1] = current;
+						}
+					}
+				}
+				int new = minOfUsedIndex();
+				if (new == -1)
+					break;
+				cout << new << "  " << office[current][new] << "  " << current;
+				current = new;
 			}
 		}
 	}
 };
+int minOfUsedIndex() {
+	int min = INT_MAX;
+	int minIndex;
+	for (int i = 0; i < ofs; i++) {
+		if (used[i][0] > 0) {
+			if (used[i][0] < min) {
+				min = used[i][0];
+				minIndex = i;
+			}
+		}
+	}
+	if (min == INT_MAX) {
+		return -1;
+	}
+	return minIndex;
+}
 int main() {
 	AdjacencyMatrix ob;
 	ob.initialize();
