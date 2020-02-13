@@ -56,7 +56,7 @@ _start :
 Opt2_chk:	cmp byte[choice], 32H
 	jne EXIT
 	;code for bcd to hex
-	
+	call BCDtoHEX
 	
 		
 	;-------------------------------------------------
@@ -116,6 +116,18 @@ loopATH1:	sub bl, 30h
 	jnz loopATH0
 ret;--------------------------------------------------------
 
+BCDtoHEX:;--------------------------------------------------
+
+;to write
+
+ret;--------------------------------------------------------
+
+
+hexToAscii:;------------------------------------------------
+
+;to write
+
+ret;--------------------------------------------------------
 Menu:
 	print dash, dash_len
 	print newLine, 1
@@ -129,6 +141,7 @@ Menu:
 	print newLine, 1
 	print choice1, choice1_len	
 ret
+
 
 
 
