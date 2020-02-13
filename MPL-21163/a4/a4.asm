@@ -48,7 +48,7 @@ section .bss
 	inAscii  : resb 16;
 	outAscii : resb 16;
 	choice   : resb 1
-	Q0 	 	 : resb 1
+	
 ;END .BSS---------------------------------------------------
 
 section .text
@@ -80,11 +80,11 @@ successiveAddition:;----------------------------------------
 	print multiplicand, lenmultiplicand
 	read inAscii, 15
 	call _AsciiToHex
-	push rax												;multiplicand pushed
+	push rax				;multiplicand pushed
 	print multiplier, lenmultiplier
 	read inAscii, 15
 	call _AsciiToHex
-	push rax										    	; multiplier pushed
+	push rax				; multiplier pushed
 	print newLine, 1
 
 	xor rax, rax
@@ -105,16 +105,16 @@ shiftAdd:
 	print multiplicand, lenmultiplicand
 	read inAscii, 15
 	call _AsciiToHex
-	push rax							;multiplicand pushed
+	push rax				;multiplicand pushed
 	print multiplier, lenmultiplier
 	read inAscii, 15
 	call _AsciiToHex
-	push rax							; multiplier pushed
+	push rax				; multiplier pushed
 	print newLine, 1
 
 	xor rax, rax
-	pop rdi			;multiplicand
-	pop rbx			;multiplier
+	pop rdi					;multiplicand
+	pop rbx					;multiplier
 
 notZero:
 	shr rdi, 1
@@ -147,11 +147,11 @@ _Menu:
 ret
 
 
-_AsciiToHex:;		//ASCII in inAscii ----> HEX in RAX
+_AsciiToHex:					;ASCII in inAscii ----> HEX in RAX
     mov rsi,inAscii;
     xor rax,rax;
     begin1:
-    cmp byte[rsi],0xA;	//Compare With New Line
+    cmp byte[rsi],0xA				;Compare With New Line
     je done;
     rol rax,04d;
     mov bl,byte[rsi];
@@ -168,13 +168,13 @@ _AsciiToHex:;		//ASCII in inAscii ----> HEX in RAX
     ret
 
 
-_HexToAscii:;		// HEX in RAX -----> ASCII in outAscii
+_HexToAscii:					;HEX in RAX -----> ASCII in outAscii
     mov rsi,outAscii+15d;
     mov rcx,16d
 
     begin2:
     xor rdx,rdx;
-    mov rbx,10h;	//16d
+    mov rbx,10h					;16d
     div rbx;
 
     cmp dl,09h;
