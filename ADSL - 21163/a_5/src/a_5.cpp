@@ -32,8 +32,13 @@ public:
 	}
 	void addEdges(){
 		while(1){
-			cout<<"office no. 1 & 2 : ";
-			cin>>of1>>of2;
+			do{
+				cout<<"office no.s (-1 for exit): ";
+				cin>>of1>>of2;
+				if(of1 == -1 || of2 == -1)
+					break;
+			}while(of1>=ofs && of2>=ofs);
+			cout<<"correct entry";
 			cout<<"Cost (-1 for exit): ";
 			cin>>cost;
 			if(cost == -1)
@@ -42,15 +47,14 @@ public:
 			office[of2-1][of1-1] = cost;
 		}
 	}
-	void krushkals(){
+	void prims(){
 		int current = 0;
-		int min = INT_MAX;
-		cout << "\nstart from 0";
-		cout << "link1" << "  " << cost << "  " << "link2";
+		cout << "\nStart from 0"<<endl;
+		cout << "link1" << "  " << "link2" << "  " << "cost"<<endl;
 		for(int i=0; i<ofs; i++){
 			if (used[current][0] > 0) {
 				used[current][0] = -1;
-				for(int j=0; j<ofs; j++){	
+				for(int j=0; j<ofs; j++){
 					if (office[current][j] > 0) {
 						if (office[current][j] < used[j][0]) {
 							used[j][0] = office[current][j];
@@ -58,31 +62,33 @@ public:
 						}
 					}
 				}
-				int new = minOfUsedIndex();
-				if (new == -1)
+				int new1 = minOfUsedIndex();
+				if (new1 == -1)
 					break;
-				cout << new << "  " << office[current][new] << "  " << current;
-				current = new;
+				cout << new1+1 << "  "<< current+1 <<"  "<<office[current][new1] << "  "<<endl;
+				current = new1;
 			}
 		}
+	}
+
+	int minOfUsedIndex() {
+		int min = INT_MAX;
+		int minIndex;
+		for (int i = 0; i < ofs; i++) {
+			if (used[i][0] > 0) {
+				if (used[i][0] < min) {
+					min = used[i][0];
+					minIndex = i;
+				}
+			}
+		}
+		if (min == INT_MAX) {
+			return -1;
+		}
+		return minIndex;
 	}
 };
-int minOfUsedIndex() {
-	int min = INT_MAX;
-	int minIndex;
-	for (int i = 0; i < ofs; i++) {
-		if (used[i][0] > 0) {
-			if (used[i][0] < min) {
-				min = used[i][0];
-				minIndex = i;
-			}
-		}
-	}
-	if (min == INT_MAX) {
-		return -1;
-	}
-	return minIndex;
-}
+
 int main() {
 	AdjacencyMatrix ob;
 	ob.initialize();
@@ -96,6 +102,8 @@ int main() {
 		cout<<"====================================="<<endl;
 		switch(choice){
 			case 1:ob.addEdges();
+				break;
+			case 2:ob.prims();
 				break;
 			case 99:
 				cont = 0;
