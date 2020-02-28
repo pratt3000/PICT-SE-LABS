@@ -23,7 +23,7 @@ public:
 	}
 	friend class Tree;
 };
-prathamesh Sonawane
+//prathamesh Sonawane
 //disp number order
 
 class Tree{
@@ -37,8 +37,9 @@ public:
 		string key, meaning;
 		cout<<"\nKey : ";
 		cin>>key;
-		cout<<"\nMeaning";
+		cout<<"Meaning : ";
 		cin>>meaning;
+		cout<<endl;
 		root = add(root, key, meaning);
 	}
 	Node *add(Node *t, string key, string meaning){
@@ -65,7 +66,7 @@ public:
 				}
 			}
 			else{
-				cout<<"/nAlready Present";
+				cout<<"---Already Present---"<<endl<<endl;
 				return 0;
 			}
 		}
@@ -116,7 +117,7 @@ public:
 		return t;
 	}
 	Node *RL(Node *t){
-		t->right = rotateLeft(t->right);
+		t->right = rotateRight(t->right);
 		t = rotateLeft(t);
 		return t;
 	}
@@ -150,24 +151,24 @@ public:
 			inorder_recursive(root,i);
 		if(choice == 2)
 			rev_inorder_recursive(root,i);
+		cout<<endl;
 	}
 	void inorder_recursive(Node *rt, int i){
 		if(rt != NULL){
 			inorder_recursive(rt->left, i);
-			cout<<i<<" : "<<rt->keyword << " : "<<rt->meaning<<endl;
-			i++;
+			cout<<rt->keyword << " : "<<rt->meaning<<endl;
 			inorder_recursive(rt->right, i);
 		}
 	}
 	void rev_inorder_recursive(Node *rt, int i){
 		if(rt != NULL){
 			rev_inorder_recursive(rt->right, i);
-			cout<<i<<" : "<<rt->keyword << " : "<<rt->meaning<<endl;
-			i++;
+			cout<<rt->keyword << " : "<<rt->meaning<<endl;
 			rev_inorder_recursive(rt->left,  i);
 		}
 	}
 	void update(){
+		int found = 0;
 		string keyword, meaning;
 		cout<<"enter keyword to search: ";
 		cin>>keyword;
@@ -189,11 +190,13 @@ public:
 				}
 				else if (comparison == 0){
 					q->meaning = meaning;
-					cout<<"\nKeyword found"<<endl;
+					cout<<"---Keyword found---"<<endl<<endl;
+					found = 1;
 					break;
 				}
 			}
-			cout<<"\nkeyword not found"<<endl;
+			if(found == 0)
+				cout<<"---keyword not found---"<<endl<<endl;
 		}
 	}
 	int max_comparisons(){
@@ -220,8 +223,8 @@ public:
 					return i;
 				}
 			}
-			cout<<"\nKeyword not found";
-			return i;
+			cout<<"---Keyword not found---"<<endl<<endl;
+			return 0;
 		}
 	}
 	Node *deleteNode(Node *root, string key){
@@ -253,9 +256,10 @@ public:
 		}
 	}
 	void inidelete(){
-		cout<<"enter keyword to delete";
+		cout<<"enter keyword to delete : ";
 		string key;
 		cin>>key;
+		cout<<"Deleted"<<endl<<endl;
 		deleteNode(root, key);
 	}
 };
@@ -263,6 +267,7 @@ int main(){
 	Tree obj,obj2,copy1;
 	int cont = 1;
 	int choice;
+	int result;
 	cout<<"\n01 : ADD NODE ";
 	cout<<"\n02 : ASCENDING ORDER";
 	cout<<"\n03 : DESCENDING ORDER";
@@ -287,7 +292,9 @@ int main(){
 				obj.update();
 				break;
 			case 5:
-				cout<<"max comparisons"<<obj.max_comparisons()<<endl;
+				result = obj.max_comparisons();
+				if(result != 0)
+					cout<<"Max comparisons : "<<result<<endl<<endl;
 				break;
 			case 6:
 				obj.inidelete();
