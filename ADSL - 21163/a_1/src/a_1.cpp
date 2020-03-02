@@ -350,7 +350,7 @@ int main() {
 			case 4:
 				obj->traversal(2);
 				cout<<endl;
-				obj->postorder();		//error
+				obj->postorder();		
 				break;
 			case 5:
 				obj->mirrorInitialize();
@@ -390,4 +390,4 @@ int main() {
 }
 
 //revise : copying to another tree
-//revise : postorder non-recursive
+
