@@ -313,7 +313,7 @@ public:
 		}
 };
 int main() {
-	Tree obj1,obj2, copy1;
+	Tree obj1,obj2, *copy1;
 	Tree *obj = &obj1;
 	int cont = 1;
 	int val;
@@ -350,7 +350,7 @@ int main() {
 			case 4:
 				obj->traversal(2);
 				cout<<endl;
-				obj->postorder();		
+				obj->postorder();		//error
 				break;
 			case 5:
 				obj->mirrorInitialize();
@@ -390,4 +390,4 @@ int main() {
 }
 
 //revise : copying to another tree
-
+//revise : postorder non-recursive
