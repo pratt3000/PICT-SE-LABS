@@ -1,0 +1,118 @@
+%macro display 2
+ mov rax,1
+ mov rdi,1
+ mov rsi,%1
+ mov rdx,%2
+ syscall
+%endmacro 
+
+%macro accept 2
+ mov rax,0
+ mov rdi,0
+ mov rsi,%1
+ mov rdx,%2
+ syscall
+%endmacro
+section .bss
+buffer resb 100
+len_buffer equ $-buffer
+buffer1 resb 12                                 
+len_buffer1 equ $-buffer1
+file_descriptor resq 1
+len_file resb 2
+array resb 20
+count resb 2
+section .data
+ filename dw 'file3.txt',0
+
+
+section .text
+ global _start
+_start:
+
+        ;Opening the file
+	mov rax,2                     ;'open' syscall
+	mov rdi,filename              ;file name
+	mov rsi,2                     ;File access mode
+	mov rdx,0777                  ;permission set
+	syscall
+	
+	mov [file_descriptor],rax     ;file descriptor  
+
+        ;Reading from file
+	
+	mov rax,0                     ;'read' syscall
+	mov rdi,[file_descriptor]     ;file pointer
+	mov rsi,buffer                ;buffer for read
+	mov rdx,len_buffer            ;length of data to be read
+	syscall
+        
+        mov [len_file],rax            ;move length of file to len_file
+;--------copy array from buffer-------------------------
+        mov rsi,buffer                ;set pointer to first byte of buffer
+        mov rcx,[len_file]            ;move length of file to rcx
+        mov rdi,array                 ;set destination pointer to array
+
+  begin:mov al,[rsi]                  ;move content of rsi to al
+        mov [rdi],al                  ;move content of al to rdi
+        inc rsi
+        inc rsi                       ;increment rsi twice for space 
+        inc rdi                       ;increment rdi pointer
+        inc byte[count]               ;increment count
+        dec rcx 
+        dec rcx                       ;decrement rcx twice
+        jnz begin                     ;loop until rcx becomes zero
+
+;---------------Bubble Sort--------------------------------------
+        mov rsi,0h                   ;set i=0
+        mov rcx,[count]              ;move count n to rcx
+        dec rcx                      ;make rcx n-1
+outerloop:
+        mov rdi,0h                   ;set j=0
+innerloop:
+        mov rax,rdi                  ;mov j to rax
+        inc rax                      ;rax contains j+1
+        
+        mov bl,byte[array+rdi]       ;move array[j] to bl
+        mov dl,byte[array+rax]       ;move array[j+1] to dl
+        
+        cmp bl,dl                    ;compare array[j] and array[j+1]
+        jbe update                   ;if below or equal no swapping directly go to update
+ swap:  mov byte[array+rax],bl       
+        mov byte[array+rdi],dl       ;swap them
+
+update: inc rdi                      ;j++
+        cmp rdi,rcx                  ;cmp j and n-1
+        jb innerloop                 ;go to innerloop
+update_out:
+        inc rsi                      ;increment i
+        cmp rsi,rcx                  ;cmp i and n-1
+        jb outerloop                
+;--------------write into file-------------------------  
+        mov rsi,array                ;mov pointer to rsi
+        mov rdi,buffer1              ;mov pointer to buffer1
+        mov rcx,[count]              ;move count to rcx
+begin1: mov al,[rsi]                 ;move contents of rsi to al
+        mov [rdi],al                 ;move contents of al to rdi
+        inc rdi
+        mov byte[rdi],20h            ;give space
+        inc rdi                      ;increment rdi
+        inc rsi
+        dec rcx                      ;decrement rcx
+        jnz begin1                   ;loop begin1
+ 
+        mov rax,1                    ;write syscall
+        mov rdi,[file_descriptor]    ;file pointer
+        mov rsi,buffer1              ;buffer for write
+        mov rdx,len_buffer1           ;length of data to write
+        syscall
+;-------------close the file---------------------------------
+       ; mov rax,3
+       ; mov rdi,[file_descriptor]
+       ; syscall
+
+  exit:  mov rax,60
+	mov rdi,0
+	syscall
+
+

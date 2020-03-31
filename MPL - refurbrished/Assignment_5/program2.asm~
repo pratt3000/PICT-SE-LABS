@@ -1,0 +1,7 @@
+global _TextCount,_HextoAscii,_AsciitoHex;
+extern buffer,char,lentext,file_descriptor
+
+%include "macro.asm"
+
+section .data
+

@@ -1,0 +1,26 @@
+section .bss
+	n resb 1
+
+	%macro accept 2
+		mov rax,0
+		mov rdi,0
+		mov rsi,%1
+		mov rdx,%2	
+	%endmacro
+
+	%macro display 2
+		mov rax,1
+		mov rdi,1
+		mov rdi,%1
+		mov rdx,%2
+	%endmacro
+section .data
+	sum db 2
+	msg1 db 'Enter count of Numbers:'
+	len1 dq equ $-msg1
+
+section .text
+global _start
+ _start:
+	accept n,1
+	display n,1
