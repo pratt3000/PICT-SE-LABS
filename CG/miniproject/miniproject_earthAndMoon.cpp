@@ -1,6 +1,3 @@
-// C Program to illustrate  
-// OpenGL animation for revolution 
-  
 #include<stdio.h> 
 #include<GL/glut.h> 
 #include<math.h> 
