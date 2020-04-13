@@ -94,7 +94,7 @@ int main() {
 	ob.initialize();
 	int cont = 1;
 	int choice;
-	cout<<"\n01 : Add edge";
+	cout<<"\n01 : Add edge";	//done
 	cout<<"\n02 prims algo";	//done
 	cout<<"\n99 : END"<<endl;
 	while(cont){
